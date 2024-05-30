@@ -3,37 +3,46 @@ const { expect } = require('@jest/globals');
 const posts = require('../db/posts.json');
 const slugs = posts.map(post => post.slug);
 
-console.log(slugs);
-
-const createSlug = () => {
-    let slug = 'ciambellone';
-
-    if (typeof slug !== 'string') { 
-        return slug.toString().toLowerCase().replace(' ', '-');
+const createSlug = (title) => {
+    if (!title || title.trim() == '') {
+        throw new Error('Titolo non presente')
     }
-
+    if (typeof title !== 'string') { 
+        return new Error('Titolo in formato sbagliato');
+    }
+    const BaseSlug = title.toLowerCase().replace(' ', '-');
+    let slug = BaseSlug;
+    
+    
     let counter = 1;
-
+    
     while (slugs.includes(slug)) {
         slug = `${slug}-${counter}`;
         counter++;
     }
-
-    return slug.toLowerCase().replace(' ', '-');   
+    
+    return slug;   
 }
 
 test('createSlug dovrebbe ritornare una stringa', () => {
-    expect(typeof createSlug()).toBe('string');
+    expect(typeof createSlug('ciambellone')).toBe('string');
 })
 
 test('createSlug dovrebbe ritornare una stringa in lowercase', () => {
-    expect(createSlug()).toBe(createSlug().toLowerCase());
+    expect(createSlug('ciambellone')).toBe(createSlug('ciambellone').toLowerCase());
 })
 
 test('createSlug dovrebbe ritornare una stringa con gli spazi sostituiti da -', () => {
-    expect(createSlug()).toBe(createSlug().replace(' ', '-'));
+    expect(createSlug('ciambellone')).toBe(createSlug('ciambellone').replace(' ', '-'));
 })
 
 test('createSlug dovrebbe incrementare di 1 lo slug quando esiste già', () => {
-    expect(slugs).not.toContain(createSlug());
+    expect(slugs).not.toContain(createSlug('ciambellone'));
+})
+
+test('createSlug dovrebbe lanciare un errore in caso di titolo non presente o formato errato', () => {
+    expect(() => createSlug('')).toThrow();
+    expect(() => createSlug()).toThrow();
+    expect(() => createSlug(Number)).toThrow();
+    expect(() => createSlug(Array)).toThrow();
 })
