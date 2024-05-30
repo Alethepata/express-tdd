@@ -1,12 +1,12 @@
 const { expect } = require('@jest/globals');
 
 const createSlug = () => {
-    let slug = 'slug';
+    let slug = 'slug prova';
 
     if (typeof slug !== 'string') { 
-        return slug.toString().toLowerCase();
+        return slug.toString().toLowerCase().replace(' ', '-');
     }
-    return slug.toLowerCase();   
+    return slug.toLowerCase().replace(' ', '-');   
 }
 
 test('createSlug dovrebbe ritornare una stringa', () => {
@@ -15,4 +15,8 @@ test('createSlug dovrebbe ritornare una stringa', () => {
 
 test('createSlug dovrebbe ritornare una stringa in lowercase', () => {
     expect(createSlug()).toBe(createSlug().toLowerCase());
+})
+
+test('createSlug dovrebbe ritornare una stringa con gli spazi sostituiti da -', () => {
+    expect(createSlug()).toBe(createSlug().replace(' ', '-'));
 })
